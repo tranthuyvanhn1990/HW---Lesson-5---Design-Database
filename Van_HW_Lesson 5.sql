@@ -117,6 +117,10 @@ from interview i
 order by create_at desc
 Limit 2;
 
+-- Reflect: Why did you modify the existing table rather than drop and recreate it? What would have happened to your data if you had?
+/* 1 interview có 1 status -> lưu status vào interview data object
+-> chỉ cần add thêm column status thôi, nếu drop/recreate thì sẽ mất data cũ đã được insert trước đó. */
+
 -- INTERATION 2: A USER PROBLEM THAT REQUIRES A NEW TABLE --
 
 -- Creat a new table --
@@ -158,3 +162,10 @@ SELECT
 COUNT (*) as total
 from highlight h
 group by tag;
+
+-- Reflect: What makes this different from Iteration 1? When do you add a column vs. create a whole new table?
+/* Highlight có các thuộc tính: quote, tag... -> tạo data object mới, table mới
+Sự khác nhau giữa add column vs create a talbe là:
++ add column: thêm cột thông tin cho data cũ
++ create a new table: tạo data object mới và quản lý các thông tin của nó
+*/
