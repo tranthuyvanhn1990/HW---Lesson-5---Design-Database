@@ -23,6 +23,7 @@ Create table research_question (
   question text not null,
   create_at timestamp default now()
 );
+-- Chỗ này research_question đang reference interview (interview_id) nha chị ưi, nhưng research question thì thuộc về cả research plan (đặt ra 1 lần cho cả plan), không phải riêng từng interview. Nếu để interview_id thì mỗi interview lại phải tự tạo lại research question, trong khi nhiều interview trong cùng 1 plan lẽ ra nên share chung 1 bộ research question. Nên đổi FK này thành plan_id references research_plan(plan_id) nhé ạ
 
 -- Create interview question table --
 Create table interview_question (
@@ -34,6 +35,8 @@ Create table interview_question (
 
 -- Bôi đen text -> run selected -> Chạy SQL từng phần
 -- Bôi đen text -> check xem dùng ở những đâu
+
+-- advanced comment - Mấy cột FK (plan_id, interview_id, research_question_id) đang ngầm hiểu là nullable hết á chị, nên 1 interview có thể tồn tại mà hong gắn plan nào, hay 1 research_question hong gắn interview/plan nào. Nếu muốn bắt buộc phải có thì thêm `not null` vào nhé ạ
 
 -- ## POPULATE DATA --
 -- Table has no foreign keys must go first --
@@ -65,6 +68,7 @@ values
   ('1', 'Bạn thường cân nhắc những yếu tố nào khi quyết định có trả tiền cho một sản phẩm?'),
   ('2', 'Mức giá nào khiến bạn cảm thấy đáng để trả tiền?'),
   ('3', 'Bạn sẽ làm gì nếu mức giá sản phẩm cao hơn ngân sách dự kiến của bạn?');
+-- Mock content từ interview -> research question -> interview question xuyên suốt theo 1 chủ đề (pricing) nha, đọc vào thấy hợp lý và thiệt hơn nhiều so với content ngẫu nhiên, tốt nha chị ưi
 
 -- INTERATION 1: A USER PROBLEM THAT REQUIRES TABLE CHANGES --
  
@@ -116,10 +120,12 @@ select
 from interview i
 order by create_at desc
 Limit 2;
+-- Câu hỏi là "the most recently created interview" nên Limit nên để 1 thui ạ.
 
 -- Reflect: Why did you modify the existing table rather than drop and recreate it? What would have happened to your data if you had?
 /* 1 interview có 1 status -> lưu status vào interview data object
 -> chỉ cần add thêm column status thôi, nếu drop/recreate thì sẽ mất data cũ đã được insert trước đó. */
+-- Thêm 1 ý nhỏ e có nói qua trên lớp: cái SQL tạo table ban đầu thực ra là để tạo database lần đầu và để refer lại khi cần, chứ không phải để mình chạy lại/sửa trực tiếp trên đó mỗi lần có thay đổi. Nên hướng đúng là viết `alter table` riêng cho từng thay đổi (như mình đang làm ở Iteration 1/2), không đụng vô phần create table ban đầu nữa.
 
 -- INTERATION 2: A USER PROBLEM THAT REQUIRES A NEW TABLE --
 
